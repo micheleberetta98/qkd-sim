@@ -103,7 +103,6 @@ defmodule Sim do
         IO.puts("EVE :: Intercepting qubits...")
         bases = BB84.random_base_bits(length(qs))
         qs1 = BB84.measure(qs, bases)
-        IO.inspect(qs1 == qs)
         IO.puts("EVE :: Measured the qubits")
         send(bob, {sender, :qubits, qs1})
     end
