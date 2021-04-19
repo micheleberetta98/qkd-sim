@@ -45,6 +45,6 @@ defmodule BB84 do
   defp encode_qubit({0, 1}), do: elem(@bases2, 0)
   defp encode_qubit({1, 1}), do: elem(@bases2, 1)
 
-  defp measure_qubit({q, 0}), do: Qubit.measure(q, @bases1)
-  defp measure_qubit({q, 1}), do: Qubit.measure(q, @bases2)
+  defp measure_qubit({q, 0}), do: Qubit.to_bit(q, @bases1)
+  defp measure_qubit({q, 1}), do: Qubit.to_bit(q, @bases2)
 end
