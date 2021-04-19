@@ -31,6 +31,15 @@ defmodule BB84 do
     |> Enum.unzip()
   end
 
+  @doc """
+  Generates `n` random bits
+  """
+  def random_base_bits(n) do
+    for _ <- 1..n do
+      Enum.random(0..1)
+    end
+  end
+
   defp encode_qubit({0, 0}), do: elem(@bases1, 0)
   defp encode_qubit({1, 0}), do: elem(@bases1, 1)
   defp encode_qubit({0, 1}), do: elem(@bases2, 0)
