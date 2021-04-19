@@ -17,6 +17,17 @@ defmodule Qubit do
   end
 
   @doc """
+  Transforms a qubit `q` into the "equivalent" bit, according to some base
+  """
+  def to_bit(q, {base0, base1}) do
+    if Qubit.measure(q, {base0, base1}) == base0 do
+      0
+    else
+      1
+    end
+  end
+
+  @doc """
   Returns a measured qubit
   """
   def measure(q) do
@@ -26,15 +37,15 @@ defmodule Qubit do
   @doc """
   Returns a measured qubit in a specified base
   """
-  def measure(q, {base1, base2}) do
+  def measure(q, {base0, base1}) do
     q = Matrix.column(q, 0)
-    vbase1 = Matrix.column(base1, 0)
-    prob1 = Vector.dot_product(q, vbase1) |> :math.pow(2)
+    vbase0 = Matrix.column(base0, 0)
+    prob1 = Vector.dot_product(q, vbase0) |> :math.pow(2)
 
     if :random.uniform() <= prob1 do
-      base1
+      base0
     else
-      base2
+      base1
     end
   end
 
