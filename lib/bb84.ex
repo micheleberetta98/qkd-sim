@@ -6,31 +6,34 @@ defmodule BB84 do
   }
 
   @doc """
-  Encodes a list `as` of 0s and 1s as a list of qubit, using a second list `bs`
+  Encodes a list `bits` of 0s and 1s as a list of qubit, using a second list `bases`
   """
-  def encode(as, bs) when is_list(as) and is_list(bs) do
-    Enum.zip(as, bs)
+  def encode(bits, bases) when is_list(bits) and is_list(bases) do
+    Enum.zip(bits, bases)
     |> Enum.map(&encode_qubit/1)
   end
 
   @doc """
-  Decodes a list of qubits `qs` using a second list `bs`
+  Decodes a list of qubits `qubits` using a second list `bases`
   """
-  def decode(qs, bs) when is_list(qs) and is_list(bs) do
-    Enum.zip(qs, bs)
+  def decode(qubits, bases) when is_list(qubits) and is_list(bases) do
+    Enum.zip(qubits, bases)
     |> Enum.map(&decode_qubit/1)
   end
 
-  def measure(qs, bs) when is_list(qs) and is_list(bs) do
-    Enum.zip(qs, bs)
+  @doc """
+  Measures a list `qubits` of qubits using the bases in `bases`
+  """
+  def measure(qubits, bases) when is_list(qubits) and is_list(bases) do
+    Enum.zip(qubits, bases)
     |> Enum.map(&measure_qubit/1)
   end
 
   @doc """
-  Keeps only the qubits (or bits) in `qs` measured with the same bases (`bs1` and `bs2` are the two bases' lists)
+  Keeps only the qubits (or bits) in `qubits` measured with the same bases (`bases1` and `bases2` are the two bases' lists)
   """
-  def discard_different_bases(qs, bs1, bs2) do
-    Enum.zip([qs, bs1, bs2])
+  def discard_different_bases(qubits, bases1, bases2) do
+    Enum.zip([qubits, bases1, bases2])
     |> Enum.filter(fn {_, b1, b2} -> b1 == b2 end)
     |> Enum.map(fn {q, b, _} -> {q, b} end)
     |> Enum.unzip()
