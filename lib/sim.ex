@@ -8,7 +8,7 @@ defmodule Sim do
   end
 
   defp start(n, with_eve) do
-    bob = start_bob()
+    bob = spawn(Bob, :init, [n])
 
     if with_eve do
       eve = spawn(Eve, :init, [bob])
@@ -18,9 +18,5 @@ defmodule Sim do
     end
 
     :ok
-  end
-
-  defp start_bob() do
-    spawn(Bob, :init, [])
   end
 end

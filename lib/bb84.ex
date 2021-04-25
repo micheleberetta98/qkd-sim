@@ -39,6 +39,24 @@ defmodule BB84 do
     |> Enum.unzip()
   end
 
+  @doc """
+  It returns a random subset of `bits` for the check phase.
+  Every bit has a probability of 40% of being chosen.
+
+  For example:
+    iex> BB84.random_check_bits([0, 1, 1, 0, 0, 1, 0, 0, 0])
+    {[0, 1, nil, nil, nil, 1, nil, nil, 0]}
+  """
+  def random_check_bits(bits) do
+    for b <- bits do
+      if :random.uniform() <= 0.4 do
+        b
+      else
+        nil
+      end
+    end
+  end
+
   defp encode_qubit({0, 0}), do: elem(@bases1, 0)
   defp encode_qubit({1, 0}), do: elem(@bases1, 1)
   defp encode_qubit({0, 1}), do: elem(@bases2, 0)
