@@ -34,7 +34,7 @@ defmodule Sim do
   end
 
   defp init_alice(bits, bob_pid) do
-    bases = BB84.random_base_bits(length(bits))
+    bases = Utils.random_bits(length(bits))
     qs = BB84.encode(bits, bases)
     IO.puts("ALICE :: Sending to bob")
     send(bob_pid, {self(), :qubits, qs})
@@ -68,7 +68,7 @@ defmodule Sim do
       {sender, :qubits, qs} ->
         IO.puts("BOB :: Received qubits")
         send(sender, {self(), :qubits_received})
-        bases = BB84.random_base_bits(length(qs))
+        bases = Utils.random_bits(length(qs))
 
         qs
         |> BB84.decode(bases)
@@ -101,7 +101,7 @@ defmodule Sim do
     receive do
       {sender, :qubits, qs} ->
         IO.puts("EVE :: Intercepting qubits...")
-        bases = BB84.random_base_bits(length(qs))
+        bases = Utils.random_bits(length(qs))
         qs1 = BB84.measure(qs, bases)
         IO.puts("EVE :: Measured the qubits")
         send(bob, {sender, :qubits, qs1})

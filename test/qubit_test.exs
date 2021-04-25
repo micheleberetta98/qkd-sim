@@ -1,8 +1,6 @@
 defmodule QubitTest do
   use ExUnit.Case
 
-  alias Tensor.Vector
-
   test "a qubit can be measured" do
     q = Qubit.new()
     assert Qubit.prob(q, 0) == 1
