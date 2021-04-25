@@ -40,9 +40,9 @@ defmodule Qubit do
   def measure(q, {base0, base1}) do
     q = Matrix.column(q, 0)
     vbase0 = Matrix.column(base0, 0)
-    prob1 = Vector.dot_product(q, vbase0) |> :math.pow(2)
+    prob0 = Vector.dot_product(q, vbase0) |> :math.pow(2)
 
-    if :random.uniform() <= prob1 do
+    if :random.uniform() <= prob0 do
       base0
     else
       base1
