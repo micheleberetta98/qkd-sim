@@ -18,20 +18,25 @@ defmodule Alice do
         loop(bits, n, bases)
 
       {bob, :bases_ok, bob_bases} ->
-        {filtered_bits, filtered_bases} = BB84.discard_different_bases(bits, bases, bob_bases)
+        {filtered_bits, _filtered_bases} = BB84.discard_different_bases(bits, bases, bob_bases)
 
         if length(filtered_bits) < 2 * n do
           send(bob, :abort)
           send(self(), :abort)
+          loop([], n, [])
         else
-          send_check(bob, filtered_bits)
+          {check_bits, remaining_bits} = partition_check_bits(filtered_bits)
+          send_check(bob, check_bits)
+          loop(remaining_bits, n, [])
         end
 
-        loop(filtered_bits, n, filtered_bases)
-
       :ok ->
-        IO.puts("ALICE :: Protocol finished, key received")
-        IO.inspect(bits)
+        IO.puts("ALICE :: Protocol finished, key of length #{length(bits)} received")
+
+        IO.puts(
+          ["ALICE :: " | for(b <- bits, do: "#{b}")]
+          |> Enum.join("")
+        )
 
       :abort ->
         IO.puts("ALICE :: Protocol aborted")
@@ -42,8 +47,17 @@ defmodule Alice do
 
   defp send_bases(bob, bases), do: send(bob, {self(), :bases, bases})
 
-  defp send_check(bob, filtered_bits) do
-    check_bits = BB84.random_check_bits(filtered_bits)
-    send(bob, {self(), :check, check_bits})
+  defp send_check(bob, check_bits), do: send(bob, {self(), :check, check_bits})
+
+  defp partition_check_bits(bits) do
+    check_bits = BB84.random_check_bits(bits)
+
+    remaining_bits =
+      bits
+      |> Enum.zip(check_bits)
+      |> Enum.filter(fn {_, cb} -> cb == nil end)
+      |> Enum.map(fn {b, _} -> b end)
+
+    {check_bits, remaining_bits}
   end
 end

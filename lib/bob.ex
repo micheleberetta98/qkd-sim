@@ -13,24 +13,33 @@ defmodule Bob do
 
       {alice, :bases, alice_bases} ->
         send_bases_ok(alice, bases)
-        {filtered_bits, filtered_bases} = BB84.discard_different_bases(bits, alice_bases, bases)
+        {filtered_bits, _filtered_bases} = BB84.discard_different_bases(bits, alice_bases, bases)
 
         if length(filtered_bits) < 2 * n do
           send(alice, :abort)
           send(self(), :abort)
         end
 
-        loop(filtered_bits, n, filtered_bases)
+        loop(filtered_bits, n, [])
 
       {alice, :check, check_bits} ->
         result = bits |> check_against(check_bits)
         send(alice, result)
         send(self(), result)
-        loop(bits, n, bases)
+
+        bits
+        |> Enum.zip(check_bits)
+        |> Enum.filter(fn {_, cb} -> cb == nil end)
+        |> Enum.map(fn {b, _} -> b end)
+        |> loop(n, bases)
 
       :ok ->
-        IO.puts("BOB :: Protocol finished, key received")
-        IO.inspect(bits)
+        IO.puts("BOB :: Protocol finished, key of length #{length(bits)} received")
+
+        IO.puts(
+          ["BOB :: " | for(b <- bits, do: "#{b}")]
+          |> Enum.join("")
+        )
 
       :abort ->
         IO.puts("BOB :: Protocol aborted")
