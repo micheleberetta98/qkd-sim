@@ -1,6 +1,6 @@
 defmodule Bob do
   def init(n) do
-    IO.inspect("BOB :: Started")
+    IO.puts("BOB :: Started")
     loop([], n, [])
   end
 
