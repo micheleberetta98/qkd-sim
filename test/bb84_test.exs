@@ -47,4 +47,14 @@ defmodule BB84Test do
 
     assert as1 == as2
   end
+
+  test "it can generates check bits" do
+    bits = [0, 1, 0, 1, 0, 0, 1, 1]
+    {check, rest} = BB84.partition_check_bits(bits, 2)
+
+    assert length(check) == length(bits)
+    check = check |> Enum.filter(&(&1 != nil))
+    assert length(check) == 2
+    assert length(rest) == length(bits) - 2
+  end
 end
