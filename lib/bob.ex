@@ -34,15 +34,15 @@ defmodule Bob do
         |> loop(n, bases)
 
       :ok ->
-        IO.puts("BOB :: Protocol finished, key of length #{length(bits)} received")
+        IO.puts("BOB   :: Protocol finished, key of length #{length(bits)} received")
 
         IO.puts(
-          ["BOB :: " | for(b <- bits, do: "#{b}")]
+          ["BOB   :: " | for(b <- bits, do: "#{b}")]
           |> Enum.join("")
         )
 
       :abort ->
-        IO.puts("BOB :: Protocol aborted")
+        IO.puts("BOB   :: Protocol aborted")
     end
   end
 
