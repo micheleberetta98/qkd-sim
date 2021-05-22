@@ -25,7 +25,11 @@ defmodule Alice do
           send(self(), :abort)
           loop([], n, [])
         else
-          {check_bits, remaining_bits} = partition_check_bits(filtered_bits)
+          {check_bits, remaining_bits} =
+            filtered_bits
+            |> Enum.take(2 * n)
+            |> BB84.partition_check_bits(n)
+
           send_check(bob, check_bits)
           loop(remaining_bits, n, [])
         end
@@ -48,16 +52,4 @@ defmodule Alice do
   defp send_bases(bob, bases), do: send(bob, {self(), :bases, bases})
 
   defp send_check(bob, check_bits), do: send(bob, {self(), :check, check_bits})
-
-  defp partition_check_bits(bits) do
-    check_bits = BB84.random_check_bits(bits)
-
-    remaining_bits =
-      bits
-      |> Enum.zip(check_bits)
-      |> Enum.filter(fn {_, cb} -> cb == nil end)
-      |> Enum.map(fn {b, _} -> b end)
-
-    {check_bits, remaining_bits}
-  end
 end

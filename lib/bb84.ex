@@ -40,21 +40,41 @@ defmodule BB84 do
   end
 
   @doc """
-  It returns a random subset of `bits` for the check phase.
-  Every bit has a probability of 40% of being chosen.
+  It returns a tuple of two subsets of `bits`:
+  - The first one contains `n` bits and they are the check bits, chosen at random
+  - The second one are the remaining bits
 
   For example:
-    iex> BB84.random_check_bits([0, 1, 1, 0, 0, 1, 0, 0, 0])
-    {[0, 1, nil, nil, nil, 1, nil, nil, 0]}
+    iex> BB84.partition_check_bits([0, 1, 1, 0, 0, 1, 0, 0, 0], 4)
+    {[0, 1, nil, nil, nil, 1, nil, nil, 0], [1, 0, 0, 0, 0]}
   """
-  def random_check_bits(bits) do
-    for b <- bits do
-      if :random.uniform() <= 0.4 do
-        b
-      else
-        nil
-      end
-    end
+  def partition_check_bits(bits, n) do
+    indexes = 0..(length(bits) - 1)
+
+    check_indexes =
+      indexes
+      |> Enum.take_random(n)
+      |> Enum.map(&{&1, true})
+      |> Enum.into(%{})
+
+    check_bits =
+      bits
+      |> Enum.zip(indexes)
+      |> Enum.map(fn {b, i} ->
+        if check_indexes[i] do
+          b
+        else
+          nil
+        end
+      end)
+
+    remaining_bits =
+      bits
+      |> Enum.zip(check_bits)
+      |> Enum.filter(fn {_, cb} -> cb == nil end)
+      |> Enum.map(fn {b, _} -> b end)
+
+    {check_bits, remaining_bits}
   end
 
   defp encode_qubit({0, 0}), do: elem(@bases1, 0)
