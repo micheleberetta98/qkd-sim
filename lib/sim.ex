@@ -1,22 +1,18 @@
 defmodule Sim do
-  def start(n) do
-    start(n, false)
+  def start(n, delta \\ 1) do
+    bob = spawn_bob(n)
+    spawn_alice(n, delta, bob)
+    :started
   end
 
-  def start_with_eve(n) do
-    start(n, true)
+  def start_with_eve(n, delta \\ 1) do
+    bob = spawn_bob(n)
+    eve = spawn(Eve, :init, [bob])
+    spawn_alice(n, delta, eve)
+    :started_with_eve
   end
 
-  defp start(n, with_eve) do
-    bob = spawn(Bob, :init, [n])
+  defp spawn_bob(n), do: spawn(Bob, :init, [n])
 
-    if with_eve do
-      eve = spawn(Eve, :init, [bob])
-      spawn(Alice, :init, [n, eve])
-    else
-      spawn(Alice, :init, [n, bob])
-    end
-
-    :ok
-  end
+  defp spawn_alice(n, delta, dest), do: spawn(Alice, :init, [n, delta, dest])
 end

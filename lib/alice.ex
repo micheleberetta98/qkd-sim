@@ -1,7 +1,7 @@
 defmodule Alice do
-  def init(n, bob) do
+  def init(n, delta, bob) do
     IO.puts("ALICE :: Started")
-    k = (4 + 1) * n
+    k = (4 + delta) * n
     bits = Utils.random_bits(k)
     bases = Utils.random_bits(k)
     IO.puts("ALICE :: Given n = #{n}, generated k = #{k} random bits")
