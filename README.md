@@ -28,3 +28,6 @@ If you want to simulate an eavesdropper listening on the channel and measuring t
 ```
 iex> Sim.start_with_eve(n)
 ```
+
+Since the generated qubits will be `(4 + delta)n`, you can set `delta` as the second parameter
+in `Sim.start/2` or `Sim.start_with_eve/2`. The default is `delta = 1`.
