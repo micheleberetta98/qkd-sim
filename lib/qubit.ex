@@ -42,7 +42,7 @@ defmodule Qubit do
     vbase0 = Matrix.column(base0, 0)
     prob0 = Vector.dot_product(q, vbase0) |> :math.pow(2)
 
-    if :random.uniform() <= prob0 do
+    if :rand.uniform() <= prob0 do
       base0
     else
       base1
