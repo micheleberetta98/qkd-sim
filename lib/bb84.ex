@@ -1,7 +1,14 @@
 defmodule BB84 do
-  @bases1 {Qubit.new(), Qubit.new() |> Qubit.qnot()}
+  @bases1 {
+    # |0>
+    Qubit.new(),
+    # |1>
+    Qubit.new() |> Qubit.qnot()
+  }
   @bases2 {
+    # | + >
     Qubit.new() |> Qubit.hadamard(),
+    # | - >
     Qubit.new() |> Qubit.qnot() |> Qubit.hadamard()
   }
 
@@ -53,14 +60,13 @@ defmodule BB84 do
     check_indexes =
       indexes
       |> Enum.take_random(n)
-      |> Enum.map(&{&1, true})
-      |> Enum.into(%{})
+      |> Enum.into(MapSet.new())
 
     check_bits =
       bits
       |> Enum.zip(indexes)
       |> Enum.map(fn {b, i} ->
-        if check_indexes[i] do
+        if MapSet.member?(check_indexes, i) do
           b
         else
           nil
