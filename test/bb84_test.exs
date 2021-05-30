@@ -38,10 +38,9 @@ defmodule BB84Test do
 
     qs = BB84.encode(as, b1) |> BB84.decode(b2)
 
-    {as1, common_bases1} = BB84.discard_different_bases(as, b1, b2)
-    {as2, common_bases2} = BB84.discard_different_bases(qs, b1, b2)
+    as1 = BB84.discard_different_bases(as, b1, b2)
+    as2 = BB84.discard_different_bases(qs, b1, b2)
 
-    assert common_bases1 == common_bases2
     assert length(as1) <= length(as)
     assert length(as2) <= length(as)
 
