@@ -13,7 +13,7 @@ defmodule Bob do
 
       {alice, :bases, alice_bases} ->
         send_bases_ok(alice, bases)
-        {filtered_bits, _filtered_bases} = BB84.discard_different_bases(bits, alice_bases, bases)
+        filtered_bits = BB84.discard_different_bases(bits, alice_bases, bases)
 
         if length(filtered_bits) < 2 * n do
           send(alice, :abort)

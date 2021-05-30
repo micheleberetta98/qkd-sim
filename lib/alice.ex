@@ -18,7 +18,7 @@ defmodule Alice do
         loop(bits, n, bases)
 
       {bob, :bases_ok, bob_bases} ->
-        {filtered_bits, _filtered_bases} = BB84.discard_different_bases(bits, bases, bob_bases)
+        filtered_bits = BB84.discard_different_bases(bits, bases, bob_bases)
 
         if length(filtered_bits) < 2 * n do
           send(bob, :abort)

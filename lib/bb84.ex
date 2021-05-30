@@ -35,8 +35,7 @@ defmodule BB84 do
   def discard_different_bases(qubits, bases1, bases2) do
     Enum.zip([qubits, bases1, bases2])
     |> Enum.filter(fn {_, b1, b2} -> b1 == b2 end)
-    |> Enum.map(fn {q, b, _} -> {q, b} end)
-    |> Enum.unzip()
+    |> Enum.map(&elem(&1, 0))
   end
 
   @doc """
