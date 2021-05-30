@@ -77,7 +77,7 @@ defmodule BB84 do
       bits
       |> Enum.zip(check_bits)
       |> Enum.filter(fn {_, cb} -> cb == nil end)
-      |> Enum.map(fn {b, _} -> b end)
+      |> Enum.map(&elem(&1, 0))
 
     {check_bits, remaining_bits}
   end
